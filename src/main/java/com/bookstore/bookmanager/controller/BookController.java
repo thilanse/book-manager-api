@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:3000")
+@RequestMapping("books")
 public class BookController
 {
     private final BookService bookService;
@@ -21,31 +22,31 @@ public class BookController
         this.bookService = bookService;
     }
 
-    @GetMapping( "books" )
+    @GetMapping( "" )
     public ResponseEntity<List<Book>> getAllBooks()
     {
         return new ResponseEntity<>( bookService.getAllBooks(), HttpStatus.OK );
     }
 
-    @GetMapping( "books/{bookId}" )
+    @GetMapping( "{bookId}" )
     public ResponseEntity<Book> getBook( @PathVariable Long bookId )
     {
         return new ResponseEntity<>( bookService.getBook( bookId ), HttpStatus.OK );
     }
 
-    @PostMapping( "books" )
+    @PostMapping( "" )
     public ResponseEntity<Book> createBook( @RequestBody Book book )
     {
         return new ResponseEntity<>( bookService.createBook( book ), HttpStatus.CREATED );
     }
 
-    @PutMapping( "books/{bookId}" )
+    @PutMapping( "{bookId}" )
     public ResponseEntity<Book> updateBook( @PathVariable Long bookId, @RequestBody Book book )
     {
         return new ResponseEntity<>( bookService.updateBook( book ), HttpStatus.OK );
     }
 
-    @DeleteMapping( "books/{bookId}" )
+    @DeleteMapping( "{bookId}" )
     public ResponseEntity<Book> deleteBook( @PathVariable Long bookId )
     {
         Book deletedBook = bookService.getBook( bookId );
