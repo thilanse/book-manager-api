@@ -44,7 +44,7 @@ public class AuthController
 
         String jwt = jwtUtil.generateToken( userDetails );
 
-        return ResponseEntity.ok(new LoginResponse( jwt ) );
+        return ResponseEntity.ok(new LoginResponse( jwt, userDetails ) );
     }
 
     @PostMapping("signup")
