@@ -7,7 +7,7 @@ public class Book
 {
     @Id
     @GeneratedValue( strategy = GenerationType.AUTO )
-    private Long bookId;
+    private Long id;
 
     private String name;
     private String author;
@@ -22,9 +22,14 @@ public class Book
     {
     }
 
-    public Book( Long bookId, String name, String author, String description, String imageUrl, String datePosted, String dateSold, String price, boolean sold )
+    public Book( Long id )
     {
-        this.bookId = bookId;
+        this.id = id;
+    }
+
+    public Book( Long id, String name, String author, String description, String imageUrl, String datePosted, String dateSold, String price, boolean sold )
+    {
+        this.id = id;
         this.name = name;
         this.author = author;
         this.description = description;
@@ -35,14 +40,14 @@ public class Book
         this.sold = sold;
     }
 
-    public Long getBookId()
+    public Long getId()
     {
-        return bookId;
+        return id;
     }
 
-    public void setBookId( Long bookId )
+    public void setId( Long id )
     {
-        this.bookId = bookId;
+        this.id = id;
     }
 
     public String getName()
