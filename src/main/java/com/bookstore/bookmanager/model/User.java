@@ -1,37 +1,43 @@
 package com.bookstore.bookmanager.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
-@Table(name = "users")
+@Table( name = "users" )
 public class User implements UserDetails
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue( strategy = GenerationType.AUTO )
     private Long id;
 
     @NotNull
-    @Column(name="username", unique=true)
+    @Column( name = "username", unique = true )
     private String username;
 
     @NotNull
-    @Column(name="email", unique=true)
+    @Column( name = "email", unique = true )
     private String email;
 
     @NotNull
+    @JsonIgnore
     private String password;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    private List<String> roles = new ArrayList<>();
+    @OneToMany( mappedBy = "user" )
+    @JsonIgnore
+    private Set<Book> books;
+
+    @ElementCollection( fetch = FetchType.EAGER )
+    private Set<String> roles = new HashSet<>();
 
     public User()
     {
@@ -44,7 +50,7 @@ public class User implements UserDetails
         this.password = password;
     }
 
-    public User( String username, String email, String password, List<String> roles )
+    public User( String username, String email, String password, Set<String> roles )
     {
         this.username = username;
         this.email = email;
@@ -52,10 +58,15 @@ public class User implements UserDetails
         this.roles = roles;
     }
 
+    public Long getId()
+    {
+        return id;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities()
     {
-        return this.roles.stream().map( SimpleGrantedAuthority::new ).collect( Collectors.toList());
+        return this.roles.stream().map( SimpleGrantedAuthority::new ).collect( Collectors.toList() );
     }
 
     @Override
@@ -73,6 +84,11 @@ public class User implements UserDetails
     public String getEmail()
     {
         return email;
+    }
+
+    public Set<Book> getBooks()
+    {
+        return books;
     }
 
     @Override

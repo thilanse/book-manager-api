@@ -1,8 +1,11 @@
 package com.bookstore.bookmanager.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 
 @Entity
+@JsonIgnoreProperties(value= {"user"})
 public class Book
 {
     @Id
@@ -17,6 +20,10 @@ public class Book
     private String dateSold;
     private String price;
     private boolean sold;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     public Book()
     {
@@ -38,6 +45,16 @@ public class Book
         this.dateSold = dateSold;
         this.price = price;
         this.sold = sold;
+    }
+
+    public User getUser()
+    {
+        return user;
+    }
+
+    public void setUser( User user )
+    {
+        this.user = user;
     }
 
     public Long getId()

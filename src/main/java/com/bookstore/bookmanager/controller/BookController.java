@@ -1,17 +1,21 @@
 package com.bookstore.bookmanager.controller;
 
 import com.bookstore.bookmanager.model.Book;
+import com.bookstore.bookmanager.model.User;
 import com.bookstore.bookmanager.service.BookService;
+import com.bookstore.bookmanager.service.BookStoreUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
-@RequestMapping("books")
+@CrossOrigin( origins = "http://localhost:3000" )
+@RequestMapping( "books" )
 public class BookController
 {
     private final BookService bookService;
@@ -23,9 +27,12 @@ public class BookController
     }
 
     @GetMapping( "" )
-    public ResponseEntity<List<Book>> getAllBooks()
+    public ResponseEntity<List<Book>> getBooks()
     {
-        return new ResponseEntity<>( bookService.getAllBooks(), HttpStatus.OK );
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<Book> books = bookService.getUserBooks( user.getId() );
+
+        return new ResponseEntity<>( books, HttpStatus.OK );
     }
 
     @GetMapping( "{bookId}" )
@@ -37,6 +44,9 @@ public class BookController
     @PostMapping( "" )
     public ResponseEntity<Book> createBook( @RequestBody Book book )
     {
+        User user = ( User ) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        book.setUser( user );
+
         return new ResponseEntity<>( bookService.createBook( book ), HttpStatus.CREATED );
     }
 
@@ -47,10 +57,17 @@ public class BookController
     }
 
     @DeleteMapping( "{bookId}" )
-    public ResponseEntity<Book> deleteBook( @PathVariable Long bookId )
+    public ResponseEntity<?> deleteBook( @PathVariable Long bookId )
     {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Book deletedBook = bookService.getBook( bookId );
-        bookService.deleteBook( bookId );
-        return new ResponseEntity<>( deletedBook, HttpStatus.OK );
+
+        if ( deletedBook.getUser().getId().equals( user.getId() ) )
+        {
+            bookService.deleteBook( bookId );
+            return new ResponseEntity<>( deletedBook, HttpStatus.OK );
+        }
+
+        return new ResponseEntity<>( "You are not authorized to delete this book", HttpStatus.FORBIDDEN );
     }
 }

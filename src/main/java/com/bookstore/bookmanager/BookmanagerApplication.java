@@ -34,7 +34,7 @@ public class BookmanagerApplication implements WebMvcConfigurer, CommandLineRunn
 	@Override
 	public void run( String... args ) throws Exception
 	{
-		User user = new User("user", "user@gmail.com","password", Collections.emptyList());
+		User user = new User("user", "user@gmail.com","password", Collections.emptySet());
 
 		if ( userRepository.findByUsername( user.getUsername() ).isEmpty() )
 		{
