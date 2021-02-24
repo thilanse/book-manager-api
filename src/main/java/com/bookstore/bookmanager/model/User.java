@@ -39,6 +39,9 @@ public class User implements UserDetails
     @ElementCollection( fetch = FetchType.EAGER )
     private Set<String> roles = new HashSet<>();
 
+    @OneToMany( mappedBy = "user" )
+    private Set<Order> orders;
+
     public User()
     {
     }

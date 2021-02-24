@@ -25,6 +25,9 @@ public class Book
     @JoinColumn(name = "user_id")
     private User user;
 
+    @OneToOne(mappedBy = "book")
+    private Order order;
+
     public Book()
     {
     }
@@ -34,7 +37,7 @@ public class Book
         this.id = id;
     }
 
-    public Book( Long id, String name, String author, String description, String imageUrl, String datePosted, String dateSold, String price, boolean sold )
+    public Book( Long id, String name, String author, String description, String imageUrl, String datePosted, String dateSold, String price, boolean sold, Order order )
     {
         this.id = id;
         this.name = name;
@@ -45,6 +48,7 @@ public class Book
         this.dateSold = dateSold;
         this.price = price;
         this.sold = sold;
+        this.order = order;
     }
 
     public User getUser()
@@ -145,5 +149,15 @@ public class Book
     public void setSold( boolean sold )
     {
         this.sold = sold;
+    }
+
+    public Order getOrder()
+    {
+        return order;
+    }
+
+    public void setOrder( Order order )
+    {
+        this.order = order;
     }
 }
